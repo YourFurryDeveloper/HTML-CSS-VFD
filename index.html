@@ -14,12 +14,24 @@
                         <p class="infotext">Play |></p>
                         <p class="infotext lightleak">Play |></p>
                     </div>
+
+                    <div class="textdisplay" style="margin-left: auto;">
+                        <p class="infotext">DVD</p>
+                        <p class="infotext lightleak">DVD</p>
+                    </div>
                 </div>
 
                 <div class="displayrow">
                     <div class="textdisplay">
                         <p class="largetext">00:00:00</p>
                         <p class="largetext lightleak">00:00:00</p>
+                    </div>
+                </div>
+
+                <div class="displayrow">
+                    <div class="textdisplay">
+                        <p class="infotext">Song Name</p>
+                        <p class="infotext lightleak">Song Name</p>
                     </div>
                 </div>
             </div>
@@ -145,7 +157,7 @@
                 startEQ(analyser, audioCtx);
             }
 
-            createAudioStream();
+            //createAudioStream();
 
             function refreshEq() {
                 let eqBarNum = 0;
