@@ -62,14 +62,22 @@ p {
     position: absolute;
 }
 
+.unlit {
+    color: rgb(28, 28, 28) !important;
+    position: absolute;
+    z-index: 1 !important;
+}
+
 .infotext {
     font-size: 15px;
     color: rgb(17, 141, 122);
+    z-index: 10;
 }
 
 .largetext {
-    font-size: 32px;
+    font-size: 31px;
     color: rgb(17, 141, 122);
+    z-index: 10;
 }
 
 #eq {
@@ -83,6 +91,10 @@ p {
 }
 
 .eqtext {
+    z-index: 10;
+}
+
+.eqtext, .eqtextbg {
     font-family: vfd-pixel;
     color: rgb(17, 141, 122);
     font-size: 20px;
