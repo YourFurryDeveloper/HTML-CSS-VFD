@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <div id="displaypanel">
+            <div class="displaycolumn">
+                <div class="displayrow">
+                    <div class="textdisplay">
+                        <p class="infotext">Play |></p>
+                        <p class="infotext lightleak">Play |></p>
+                    </div>
+                </div>
+
+                <div class="displayrow">
+                    <div class="textdisplay">
+                        <p class="largetext">00:00:00</p>
+                        <p class="largetext lightleak">00:00:00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="displaycolumn">
+                <div id="eq">
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+
+                    <div class="textdisplay eqbar">
+                        <pre class="eqtext">=</pre>
+                        <pre class="eqtext lightleak">=</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const eqMax = 6;
+
+            let eqValuesMapped = [6, 2, 5, 4, 3, 6, 5, 4, 1, 2, 3 ];
+
+            const mapRange = (value, oldMin, oldMax, newMin, newMax) => {
+                const normalizedValue = (value - oldMin) / (oldMax - oldMin);
+                const mappedValue = normalizedValue * (newMax - newMin) + newMin;
+
+                return mappedValue;
+            };
+
+            function getMicEQValues(analyser, audioCtx) {
+                const freqData = new Uint8Array(analyser.frequencyBinCount);
+
+                const bands = [
+                    [20, 40],     // 0 Sub-bass
+                    [40, 80],     // 1 Bass
+                    [80, 160],    // 2 Upper-bass
+                    [160, 315],   // 3 Low-mid
+                    [315, 630],   // 4 Mid
+                    [630, 1250],  // 5 Upper-mid
+                    [1250, 2500], // 6 Presence low
+                    [2500, 5000], // 7 Presence high
+                    [5000, 8000], // 8 Treble low
+                    [8000, 12000],// 9 Treble mid
+                    [12000, 20000]// 10 Air
+                ];
+
+                // Convert frequency → FFT index
+                const freqToIndex = (freq) =>
+                    Math.round(freq / (audioCtx.sampleRate / analyser.fftSize));
+
+                analyser.getByteFrequencyData(freqData);
+
+                // Calculate average amplitude of each band
+                return bands.map(([low, high]) => {
+                    const lowIndex  = freqToIndex(low);
+                    const highIndex = freqToIndex(high);
+
+                    let sum = 0, count = 0;
+
+                    for (let i = lowIndex; i <= highIndex && i < freqData.length; i++) {
+                        sum += freqData[i];
+                        count++;
+                    }
+                    return count ? sum / count : 0;
+                });
+            }
+
+            async function createAudioStream(callback) {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioCtx = new AudioContext();
+                // 3. Create source from microphone
+                const source = audioCtx.createMediaStreamSource(stream);
+                const analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 2048;
+                source.connect(analyser);
+                startEQ(analyser, audioCtx);
+            }
+
+            createAudioStream();
+
+            function refreshEq() {
+                let eqBarNum = 0;
+                for (eqbar of document.querySelectorAll(".eqbar")) {
+                    for (eqtext of eqbar.querySelectorAll(".eqtext")) {
+                        let newEqValue = "";
+                        for (let i = 0; i < eqValuesMapped[eqBarNum]; i++) {
+                            newEqValue += "=\n"
+                        }
+
+                        //eqtext.textContent = `=\n` * eqValues[eqBarNum];
+                        eqtext.textContent = newEqValue;
+                    }
+                    eqBarNum += 1
+                }
+            }
+
+            function startEQ(analyser, audioCtx) {
+                setInterval(function() {
+                    eqValues = getMicEQValues(analyser, audioCtx);
+                    for (value in eqValues) {
+                        //min = Math.ceil(1);
+                        //max = Math.floor(6);
+                        //eqValues[value] = Math.floor(Math.random() * (max - min + 1)) + min;
+                        //console.log(Math.min(6, Math.floor(value / 30 * 5) + 1))
+                        eqValuesMapped[value] = Math.floor( eqValues[value] / 255 * eqMax ) + 1;
+                        console.log(Math.floor( eqValues[value] / 255 * eqMax ) + 1)
+                    }
+
+                    refreshEq();
+                }, 0)
+            }
+        </script>
+    </body>
+</html>

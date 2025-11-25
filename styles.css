@@ -1,0 +1,95 @@
+@font-face {
+  font-family: "vfd-pixel";
+  src: url('vfd-pixel.otf');
+}
+
+@font-face {
+  font-family: "vfd-segment";
+  src: url('segment-digital-vfd.otf');
+}
+
+html {
+    background-color: black;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#displaypanel {
+    display: flex;
+    flex-direction: row;
+    width: 400px;
+    height: 100px;
+    background-color: #151515;
+    border: 3px solid rgb(43, 43, 43);
+    padding: 10px;
+}
+
+.displaycolumn {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.displayrow {
+    display: flex;
+    align-items: center;
+    height: fit-content;
+    margin-bottom: 10px;
+}
+
+p {
+    margin: 0;
+}
+
+.textdisplay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    font-family: vfd-segment;
+}
+
+.lightleak {
+    filter: blur(5px);
+    color: rgb(29, 195, 170);
+    position: absolute;
+}
+
+.infotext {
+    font-size: 15px;
+    color: rgb(17, 141, 122);
+}
+
+.largetext {
+    font-size: 30px;
+    color: rgb(17, 141, 122);
+}
+
+#eq {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.eqbar {
+    height: 100%;
+}
+
+.eqtext {
+    font-family: vfd-pixel;
+    color: rgb(17, 141, 122);
+    font-size: 20px;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    letter-spacing: 1px;
+    line-height: 15px;
+    transform: rotateX(180deg);
+}
