@@ -25,7 +25,6 @@
                     <div class="textdisplay">
                         <p class="largetext">00:00:00</p>
                         <p class="largetext lightleak">00:00:00</p>
-                        <p class="largetext unlit">00:00:00</p>
                     </div>
                 </div>
 
@@ -33,6 +32,7 @@
                     <div class="textdisplay">
                         <p class="infotext">Song Name</p>
                         <p class="infotext lightleak">Song Name</p>
+                        <p class="infotext unlit">00000000000000</p>
                     </div>
                 </div>
             </div>
@@ -179,6 +179,7 @@
                 const freqData = new Uint8Array(analyser.frequencyBinCount);
 
                 const bands = [
+                    [0, 20],
                     [20, 40],     // 0 Sub-bass
                     [40, 80],     // 1 Bass
                     [80, 160],    // 2 Upper-bass
@@ -214,7 +215,14 @@
             }
 
             async function createAudioStream(callback) {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                //const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const desktopStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                    audio: true
+                });
+                const audioStream = desktopStream.getAudioTracks()[0];
+                const stream = new MediaStream([audioStream]);
+
                 const audioCtx = new AudioContext();
                 // 3. Create source from microphone
                 const source = audioCtx.createMediaStreamSource(stream);
@@ -251,7 +259,6 @@
                         //eqValues[value] = Math.floor(Math.random() * (max - min + 1)) + min;
                         //console.log(Math.min(6, Math.floor(value / 30 * 5) + 1))
                         eqValuesMapped[value] = Math.floor( eqValues[value] / 255 * eqMax ) + 1;
-                        console.log(Math.floor( eqValues[value] / 255 * eqMax ) + 1)
                     }
 
                     refreshEq();
